@@ -167,6 +167,8 @@ public class Enhancer extends AbstractClassGenerator
      * object should be used for each generated object, and should not
      * be shared across threads. To create additional instances of a
      * generated class, use the <code>Factory</code> interface.
+     * 创建一个新的增强器。每个生成的对象都应该使用一个新的增强器对象，并且不应在线程间共享。
+     * 要创建已生成类的其他实例，请使用 Factory 接口。
      * @see Factory
      */
     public Enhancer() {
@@ -297,6 +299,7 @@ public class Enhancer extends AbstractClassGenerator
      * Generate a new class if necessary and uses the specified
      * callbacks (if any) to create a new object instance.
      * Uses the no-arg constructor of the superclass.
+     * 如有必要，生成一个新类，并使用指定的回调函数（如果有）创建一个新的对象实例。使用超类的无参构造函数。
      * @return a new instance
      */
     public Object create() {
@@ -431,6 +434,9 @@ public class Enhancer extends AbstractClassGenerator
          * Technically, it is a re-implementation of {@link Enhancer#createUsingReflection(Class)},
          * with "cache {@link #setThreadCallbacks} and {@link #primaryConstructor}"
          *
+         * 为给定的参数类型创建代理实例，并分配回调函数。理想情况下，每个代理类应该只使用一组参数类型，否则就需要花费时间查找构造函数。
+         * 从技术上讲，它是 `createUsingReflection(Class)` 的重新实现，并缓存了 `setThreadCallbacks` 和 `primaryConstructor`。
+         *
          * @see #createUsingReflection(Class)
          * @param argumentTypes constructor argument types
          * @param arguments constructor arguments
@@ -441,13 +447,17 @@ public class Enhancer extends AbstractClassGenerator
             setThreadCallbacks(callbacks);
             try {
                 // Explicit reference equality is added here just in case Arrays.equals does not have one
+                // 这里添加了显式引用相等性，以防 Arrays.equals 方法没有提供这种相等性。
                 if (primaryConstructorArgTypes == argumentTypes ||
                         Arrays.equals(primaryConstructorArgTypes, argumentTypes)) {
                     // If we have relevant Constructor instance at hand, just call it
+                    // 如果我们手头有相关的构造函数实例，直接调用它即可。
                     // This skips "get constructors" machinery
+                    // 这样就跳过了“获取构造函数”机制。
                     return ReflectUtils.newInstance(primaryConstructor, arguments);
                 }
                 // Take a slow path if observing unexpected argument types
+                // 如果遇到意外的参数类型，请采取谨慎的做法。
                 return ReflectUtils.newInstance(generatedClass, argumentTypes, arguments);
             } finally {
                 // clear thread callbacks to allow them to be gc'd
@@ -814,6 +824,9 @@ public class Enhancer extends AbstractClassGenerator
      * Implementation detail: java.lang.reflect instances are not cached, so this method should not
      * be used on a hot path.
      * This method is used when {@link #setUseCache(boolean)} is set to {@code false}.
+     *
+     * 实例化一个代理实例并分配回调值。实现细节：java.lang.reflect 实例不会被缓存，因此不应在热路径上使用此方法。
+     * 此方法仅在 setUseCache(boolean) 设置为 false 时使用。
      *
      * @param type class to instantiate
      * @return newly created instance

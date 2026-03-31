@@ -33,7 +33,9 @@ import net.sf.cglib.reflect.FastClass;
  * @version $Id: MethodProxy.java,v 1.16 2009/01/11 20:09:48 herbyderby Exp $
  */
 public class MethodProxy {
+    // 原始方法签名: 如: "addUser"
     private Signature sig1;
+    // 代理方法签名: 如: "CGLIB$addUser$0"
     private Signature sig2;
     private CreateInfo createInfo;
     
@@ -84,9 +86,13 @@ public class MethodProxy {
 
     private static class FastClassInfo
     {
+        // 目标类的FastClass
         FastClass f1;
+        // 代理类的FastClass
         FastClass f2;
+        // 目标类方法索引
         int i1;
+        // 代理类方法索引
         int i2;
     }
 
@@ -225,6 +231,7 @@ public class MethodProxy {
         try {
             init();
             FastClassInfo fci = fastClassInfo;
+            // 使用FastClass直接调用，避免反射
             return fci.f2.invoke(fci.i2, obj, args);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();

@@ -266,7 +266,7 @@ implements ClassGenerator
      * Default implementation returns <code>null</code> for using a default protection domain. Sub-classes may
      * override to use a more specific protection domain.
      * </p>
-     *
+     * 返回定义类时要使用的保护域。默认实现返回 null，表示使用默认保护域。子类可以重写此方法以使用更具体的保护域。
      * @return the protection domain (<code>null</code> for using a default)
      */
     protected ProtectionDomain getProtectionDomain() {
